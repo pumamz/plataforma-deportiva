@@ -1,0 +1,3 @@
+import { CreditCard, LayoutDashboard, MapPin, ShieldCheck, Swords, Trophy, Users, type LucideIcon } from 'lucide-react';
+import type { Section } from '../domain/types';
+export const navigation: { id: Section; label: string; icon: LucideIcon }[] = [{ id: 'overview', label: 'Inicio', icon: LayoutDashboard }, { id: 'athletes', label: 'Deportistas', icon: Users }, { id: 'teams', label: 'Equipos', icon: ShieldCheck }, { id: 'venues', label: 'Sedes y canchas', icon: MapPin }, { id: 'competitions', label: 'Campeonatos', icon: Trophy }, { id: 'matches', label: 'Partidos en vivo', icon: Swords }, { id: 'charges', label: 'Cartera y pagos', icon: CreditCard }];

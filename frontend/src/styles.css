@@ -39,6 +39,15 @@
 }
 
 @layer components {
+  .sidebar-brand-row { @apply flex items-center; }
+  .sidebar-link { @apply flex h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-xs font-semibold text-ink-muted no-underline transition duration-200 hover:bg-panel-muted hover:text-ink; }
+  .sidebar-link.active { @apply text-ink; background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  .sidebar-link b { @apply ml-auto rounded-md bg-danger px-1.5 py-0.5 text-[7px] tracking-wider text-white; }
+  .sidebar-backdrop { @apply fixed inset-0 z-40 border-0 bg-black/50 backdrop-blur-[2px] md:hidden; }
+  .top-search kbd { @apply ml-auto hidden shrink-0 rounded-md border border-line bg-panel-muted px-1.5 py-1 text-[9px] font-semibold text-ink-muted sm:block; }
+  .top-links a { @apply relative flex items-center px-3 text-[11px] font-bold text-ink-muted no-underline transition hover:text-ink; }
+  .top-links a.active { @apply text-ink; }
+  .top-links a.active::after { content: ''; @apply absolute bottom-0 left-3 right-3 h-0.5 rounded-full; background: var(--accent); }
   .actions-heading { @apply sticky right-0 z-10 w-28 bg-panel-muted text-right; box-shadow: -1px 0 0 var(--border); }
   .actions-heading span { @apply sr-only; }
   .actions-cell { @apply sticky right-0 z-[5] w-28 bg-panel; box-shadow: -1px 0 0 var(--border); }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export type Theme = 'dark' | 'light';
 const STORAGE_KEY = 'sports-ui-theme-v1';
@@ -11,5 +11,6 @@ export function useTheme(accentColor?: string) {
   });
   useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem(STORAGE_KEY, theme); }, [theme]);
   useEffect(() => { if (accentColor) document.documentElement.style.setProperty('--accent', accentColor); }, [accentColor]);
-  return { theme, setTheme, toggleTheme: () => setTheme((current) => current === 'dark' ? 'light' : 'dark') };
+  const toggleTheme = useCallback(() => setTheme((current) => current === 'dark' ? 'light' : 'dark'), []);
+  return { theme, setTheme, toggleTheme };
 }

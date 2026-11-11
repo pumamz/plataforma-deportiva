@@ -1,10 +1,14 @@
 import { useState, type CSSProperties, type FormEvent } from 'react';
 import { api } from '../../api';
+import { useAuth } from '../../context/auth-context';
+import { useAppTheme } from '../../context/theme-context';
 import type { Tenant } from '../../domain/types';
-import type { Theme } from '../../hooks/useTheme';
 
-export function SettingsPage({ tenant, theme, onThemeChange, onUpdated }: { tenant: Tenant; theme: Theme; onThemeChange: (theme: Theme) => void; onUpdated: (tenant: Tenant) => void }) {
-  const [name, setName] = useState(tenant.name); const [primaryColor, setPrimaryColor] = useState(tenant.primaryColor); const [message, setMessage] = useState(''); const [saving, setSaving] = useState(false);
+export function SettingsPage() {
+  const { tenant, updateTenant: onUpdated } = useAuth();
+  const { theme, setTheme: onThemeChange } = useAppTheme();
+  const [name, setName] = useState(tenant?.name ?? ''); const [primaryColor, setPrimaryColor] = useState(tenant?.primaryColor ?? '#5b5fff'); const [message, setMessage] = useState(''); const [saving, setSaving] = useState(false);
+  if (!tenant) return null;
   async function submit(event: FormEvent) { event.preventDefault(); setSaving(true); setMessage(''); try { const updated = await api<Tenant>('/api/settings', { method: 'PUT', body: JSON.stringify({ name, primaryColor }) }); onUpdated(updated); setMessage('Configuración guardada correctamente.'); } catch (cause) { setMessage(cause instanceof Error ? cause.message : 'No se pudo guardar'); } finally { setSaving(false); } }
   return <section className="module-view"><div className="module-header"><div><span className="eyebrow">PERSONALIZACIÓN</span><h1>Configuración</h1><p>Identidad y apariencia de la organización activa.</p></div></div><div className="settings-grid"><form className="panel settings-form" onSubmit={submit}><h3>Organización</h3><label>Nombre<input required value={name} onChange={(e) => setName(e.target.value)} /></label><label>Color de enfoque<div className="color-field"><input aria-label="Selector de color" type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} /><input aria-label="Color hexadecimal" required pattern="#[0-9A-Fa-f]{6}" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} /></div></label><fieldset className="theme-field"><legend>Tema de interfaz</legend><div className="theme-options"><button type="button" className={theme === 'dark' ? 'selected' : ''} aria-pressed={theme === 'dark'} onClick={() => onThemeChange('dark')}>Oscuro</button><button type="button" className={theme === 'light' ? 'selected' : ''} aria-pressed={theme === 'light'} onClick={() => onThemeChange('light')}>Claro</button></div></fieldset><label>País<input value={tenant.country} disabled /></label><label>Moneda<input value={tenant.currency} disabled /></label>{message && <div className={message.includes('correctamente') ? 'success-banner' : 'error-banner'} role="status">{message}</div>}<button className="primary-button compact" disabled={saving}>{saving ? 'Guardando…' : 'Guardar configuración'}</button></form><aside className="panel brand-preview" style={{ '--tenant-color': primaryColor } as CSSProperties}><span className="eyebrow">VISTA PREVIA</span><div className="tenant-logo large">{name.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()}</div><h2>{name}</h2><p>El enfoque, selección y navegación usan este color.</p></aside></div></section>;
 }

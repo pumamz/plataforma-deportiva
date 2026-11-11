@@ -1,13 +1,17 @@
 import { Activity, BadgeDollarSign, Dumbbell, MapPin, ShieldCheck, Sparkles, Trophy, Users, type LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { api } from '../../api';
+import { sectionPaths } from '../../app/navigation';
 import type { Dashboard, Section } from '../../domain/types';
 import { EmptyState, Loading, MiniCrest, TeamCrest } from '../../shared/components';
 import { clock, money, sportLabel, sportOptions } from '../../shared/formatters';
 
-export function DashboardPage({ refreshKey, navigate }: { refreshKey: number; navigate: (section: Section) => void }) {
+export function DashboardPage() {
+  const routerNavigate = useNavigate();
+  const navigate = (section: Section) => routerNavigate(sectionPaths[section]);
   const [data, setData] = useState<Dashboard | null>(null); const [error, setError] = useState('');
-  useEffect(() => { api<Dashboard>('/api/dashboard').then(setData).catch((e) => setError(e.message)); }, [refreshKey]);
+  useEffect(() => { api<Dashboard>('/api/dashboard').then(setData).catch((e) => setError(e.message)); }, []);
   if (error) return <EmptyState title="No se pudo cargar el resumen" detail={error} />;
   if (!data) return <Loading />;
   const featured = data.matches.find((match) => match.status === 'LIVE') || data.matches[0];
